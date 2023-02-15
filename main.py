@@ -10,19 +10,19 @@ from telegram.ext import (Updater,
 dotenv.load_dotenv(Path('venv', '.env'))
 customers = ['Vyzlastyle']  # список клиентов
 coders = ['MelnikovEI', 'kaser137']  # список программистов
-orders = [{'client': 'kaser137', 'task_text': 'Sasha', 'coder': ''},
-          {'client': 'kaser137', 'task_text': 'U2', 'coder': ''}]
+orders = [{'client': 'Vyzlastyle', 'task_text': 'fix my site', 'coder': ''},
+          {'client': 'kaser137', 'task_text': 'extend functionality of my blog', 'coder': ''}]  # имитация базы данных
 bot_token = os.environ['BOT_TG_TOKEN']
 
 # начало блока функций для разговора с клиентом ========================================================================
 
-N_ORDER, T_ORDER = 0, 1
+N_ORDER, T_ORDER = 0, 1 # точки ветвления разговора
 
 
 def start_client_talk(update, _):  # функция запускающая разговор
-    update.message.reply_text('hello, dear friend.'
-                              'type /cancel for stop talking.'
-                              'wanna new order? Y/N?')
+    update.message.reply_text('hello, dear friend, '
+                              'type /cancel for stop talking, '
+                              'wanna new order? For continue type anything.')
     return N_ORDER
 
 
@@ -31,7 +31,7 @@ def new_order(update, _):  # функция которая просит текс
     return T_ORDER
 
 
-def text_new_order(update, _):  # функция которя записывает данные заказа
+def text_new_order(update, _):  # функция которая записывает данные заказа
     user = update.message.from_user.username
     text = update.message.text
     order_attr = {
@@ -54,20 +54,21 @@ def client_cancel(update, _):  # функция прерывающая разг�
 
 # начало блока функций для разговора с программистом ===================================================================
 
-E_ORDER, C_ORDER = 0, 1
+E_ORDER, C_ORDER = 0, 1 # точки ветвления разговора
 
 
 def start_coder_talk(update, _):  # функция запускающая разговор
-    update.message.reply_text('hello, dear friend.'
-                              'type /cancel for stop talking.'
-                              'wanna sea available orders? Y/N?')
+    update.message.reply_text('hello, dear friend, '
+                              'type /cancel for stop talking, '
+                              'wanna sea available orders? For continue type anything.')
     return E_ORDER
 
 
 def expose_orders(update, _):  # функция которая показывает доступные заказы
     for order in orders:
         if not order['coder']:
-            update.message.reply_text(f"number of order {order.index}, client:{order['client']}, task: {order['text']}")
+            update.message.reply_text(f"number of order {orders.index(order)}, client: {order['client']}, "
+                                      f"task: {order['task_text']}")
     update.message.reply_text('for choose wanted order input number of order')
     return C_ORDER
 
@@ -76,6 +77,9 @@ def choose_order(update, _):  # функция выбора заказа
     user = update.message.from_user.username
     text = update.message.text
     orders[int(text)]['coder'] = user
+    update.message.reply_text(f'thanks, for your choice, '
+                              f'your task: {orders[int(text)]["task_text"]}, '
+                              f'your client: {orders[int(text)]["client"]}')
     print(orders)
     return ConversationHandler.END
 
@@ -94,11 +98,6 @@ def start(update, _):
         update.message.reply_text('wellcome, dear coder /common for coding')
     else:
         update.message.reply_text('you have to contact with owners ')
-
-
-def echo(update, _):
-    text = 'echo has been read it'
-    update.message.reply_text(text=text)
 
 
 updater = Updater(token=bot_token)
