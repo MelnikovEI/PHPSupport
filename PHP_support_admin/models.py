@@ -33,11 +33,14 @@ class Question(models.Model):
 
 class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='client', related_name='order')
-    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor', related_name='order', blank=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='question', related_name='order', blank=True)
+    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor', related_name='order', null=True, blank=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='question', related_name='order', null=True, blank=True)
     request = models.TextField('description of the request from client')
     access_info = models.CharField('web site access information', max_length=400)
     date_estimation = models.DateField(verbose_name='estimation date of completing job from contractor', null=True, blank=True)
     is_finished_by_contractor = models.BooleanField("is order finished from contractor's point of view", default=False)
     is_finished_by_client = models.BooleanField("is order finished from client's point of view", default=False)
     date_closed = models.DateField(verbose_name='date of closing the order by client', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.client.tg_account} _ {self.id}'

@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from PHP_support_admin.models import Order, Question, Contractor, Client
 
 
@@ -27,3 +29,11 @@ def is_contractor_verified(tg_account: str):
     except Contractor.DoesNotExist:
         return None
     return contractor.is_verified
+
+
+def create_order(tg_account, request, access_info):
+    """Если клиент не подписан или не зарегистрирован, вернет None"""
+    if not(is_subscription_active(tg_account)):
+        return
+    client = get_object_or_404(Client, tg_account=tg_account)
+    return Order.objects.create(client=client, request=request, access_info=access_info)
