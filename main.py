@@ -6,6 +6,14 @@ from telegram.ext import (Updater,
                           ConversationHandler,
                           MessageHandler,
                           Filters)
+#======================================================
+from PHPSupport_DB import setup
+
+setup()
+
+import db_api
+
+#=========================================================
 
 dotenv.load_dotenv(Path('venv', '.env'))
 customers = ['Vyzlastyle']  # список клиентов
@@ -92,12 +100,18 @@ def coder_cancel(update, _):  # функция прерывающая разго
 # конец блока функций для разговора с программистом ====================================================================
 def start(update, _):
     username = update.message.chat.username
-    if username in customers:
-        update.message.reply_text('wellcome, dear client type /begin for cooperate')
-    elif username in coders:
+    if db_api.is_contractor_verified(username):
         update.message.reply_text('wellcome, dear coder /common for coding')
+    elif db_api.is_subscription_active(username):
+        update.message.reply_text('wellcome, dear client type /begin for cooperate')
     else:
         update.message.reply_text('you have to contact with owners ')
+    # if username in customers:
+    #     update.message.reply_text('wellcome, dear client type /begin for cooperate')
+    # elif username in coders:
+    #     update.message.reply_text('wellcome, dear coder /common for coding')
+    # else:
+    #     update.message.reply_text('you have to contact with owners ')
 
 
 updater = Updater(token=bot_token)
