@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 
 
@@ -8,6 +9,10 @@ class Client(models.Model):
 
     def __str__(self):
         return self.tg_account
+
+    def is_subscription_active(self) -> bool:
+        now = datetime.date.today()
+        return self.subscription_start_date <= now <= self.subscription_end_date
 
 
 class Contractor(models.Model):
