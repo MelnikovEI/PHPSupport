@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from PHP_support_admin.models import Order, Question, Contractor, Client
 
 
-def is_subscription_active(tg_account: str):
+def is_subscription_active(tg_account: str) -> bool:
     """
     :param tg_account: account of a client
     :return: None - client is not registered
@@ -17,7 +17,7 @@ def is_subscription_active(tg_account: str):
     return client.is_subscription_active()
 
 
-def is_contractor_verified(tg_account: str):
+def is_contractor_verified(tg_account: str) -> bool:
     """
     :param tg_account: tg account of contractor
     :return: None - contractor is not registered
@@ -33,7 +33,12 @@ def is_contractor_verified(tg_account: str):
 
 def create_order(tg_account, request, access_info):
     """Если клиент не подписан или не зарегистрирован, вернет None"""
-    if not(is_subscription_active(tg_account)):
+    if not (is_subscription_active(tg_account)):
         return
     client = get_object_or_404(Client, tg_account=tg_account)
     return Order.objects.create(client=client, request=request, access_info=access_info)
+
+
+def get_orders(tg_account):
+    client = get_object_or_404(Client, tg_account=tg_account)
+    return list(client.orders.values())  # здесь можно ограничить выдачу полей

@@ -32,8 +32,8 @@ class Question(models.Model):
 
 
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='client', related_name='order')
-    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor', related_name='order', null=True, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='client', related_name='orders')
+    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor', related_name='orders', null=True, blank=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='question', related_name='order', null=True, blank=True)
     request = models.TextField('description of the request from client')
     access_info = models.CharField('web site access information', max_length=400)
@@ -43,4 +43,4 @@ class Order(models.Model):
     date_closed = models.DateField(verbose_name='date of closing the order by client', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.client.tg_account} _ {self.id}'
+        return f'{self.client.tg_account}_{self.id}'
