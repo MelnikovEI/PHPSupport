@@ -34,7 +34,7 @@ class Question(models.Model):
 class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='client', related_name='orders')
     contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor', related_name='orders', null=True, blank=True)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='question', related_name='order', null=True, blank=True)
+    question = models.ManyToManyField(Question, verbose_name='question', related_name='order', null=True, blank=True)
     request = models.TextField('description of the request from client')
     access_info = models.CharField('web site access information', max_length=400)
     date_estimation = models.DateField(verbose_name='estimation date of completing job from contractor', null=True, blank=True)
