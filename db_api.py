@@ -45,3 +45,12 @@ def get_active_orders(tg_account):
     client = get_object_or_404(Client, tg_account=tg_account)
     return list(client.orders.filter(is_finished_by_client=False).values())  # здесь можно ограничить выдачу полей
 
+
+def get_order_info(order_id: int):
+    """Возвращает статус заказа: определен ли подрядчик, список сообщений к заказу"""
+    order = get_object_or_404(Order, id=order_id)
+    status = {
+        'is_contractor_defined': bool(order.contractor),
+        'message_history': list(order.question.all().values_list('question'))
+    }
+    return status
