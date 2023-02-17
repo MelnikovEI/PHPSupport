@@ -60,3 +60,8 @@ def get_order_info(order_id: int):
 def get_order(id):
     order = get_object_or_404(Order, id=id)
     return order
+
+
+def add_message(id, message):
+    order = get_order(id)
+    order.question.create(question=message)
