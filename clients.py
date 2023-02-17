@@ -27,13 +27,9 @@ def send_order(update, _):  # функция которя записывает �
     chat_id = update.message.chat.id
     text = update.message.text
     update.message.reply_text('input access_info')
-    #access_info = надо получить его тоже
-    # order = Order()
-    # order.client.tg_account = user
-    # order.request = text
-    # order.client_chat_id = chat_id
-    # order.save()
-    # db_api.create_order(user, text, access_info)
+    # access_info = надо получить его тоже
+
+    db_api.create_order(user, text, access_info = '12344') #ALARM стоит заглушка
     print(text)
     # update.message.reply_text(f'your order has been check in\n and has id: {order.order_id}')
     update.message.reply_text(f'your order has been check in')
@@ -47,10 +43,16 @@ def send_order(update, _):  # функция которя записывает �
 
 def expose_active_order(update, _):
     user = update.message.from_user.username
-    orders = Order.objects.filter(client__tg_account=user)
+    orders = db_api.get_active_orders(user)
     for order in orders:
-        update.message.reply_text(f"order id: {order.order_id}, coder: {order.contractor}, "
-                                  f"task: {order.request}")
+        update.message.reply_text(f"""
+                                order id: {order['id']},
+                                task: {order['request']},
+                                Contractor: {'Назначен' if order['contractor_id'] else 'Неназначен' },
+                                
+                                """
+                                )
+
     update.message.reply_text('for choose order for working, input order id')
     return C_3
 
