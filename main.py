@@ -39,7 +39,8 @@ client_conversation_handler = ConversationHandler(
                   CommandHandler('active', clients.expose_active_order)],
     states={
         clients.C_1: [CommandHandler('create', clients.create_order), CommandHandler('active', clients.expose_active_order)],
-        clients.C_2: [MessageHandler(Filters.text & (~Filters.command), clients.send_order)],
+        clients.C_2: [MessageHandler(Filters.text & (~Filters.command), clients.get_access_info)],
+        clients.C_5: [MessageHandler(Filters.text & (~Filters.command), clients.send_order)],
         clients.C_3: [MessageHandler(Filters.text & (~Filters.command), clients.work_with_order)],
         clients.C_4: [MessageHandler(Filters.text & (~Filters.command), clients.message_for_coder)]
     },

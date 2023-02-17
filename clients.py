@@ -1,5 +1,6 @@
 from telegram.ext import ConversationHandler
 
+import db_api
 from PHP_support_admin.models import Order
 
 
@@ -25,12 +26,17 @@ def send_order(update, _):  # функция которя записывает �
     user = update.message.from_user.username
     chat_id = update.message.chat.id
     text = update.message.text
-    order = Order()
-    order.client.tg_account = user
-    order.request = text
-    order.client_chat_id = chat_id
-    order.save()
-    update.message.reply_text(f'your order has been check in\n and has id: {order.order_id}')
+    update.message.reply_text('input access_info')
+    #access_info = надо получить его тоже
+    # order = Order()
+    # order.client.tg_account = user
+    # order.request = text
+    # order.client_chat_id = chat_id
+    # order.save()
+    # db_api.create_order(user, text, access_info)
+    print(text)
+    # update.message.reply_text(f'your order has been check in\n and has id: {order.order_id}')
+    update.message.reply_text(f'your order has been check in')
     return ConversationHandler.END
 
 
