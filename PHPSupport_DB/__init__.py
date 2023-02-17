@@ -6,3 +6,5 @@ def setup():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{}.settings".format(module))
     import django
     django.setup()
+
+setup()

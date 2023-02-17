@@ -1,23 +1,22 @@
+
+#===============================================
 import os
 import dotenv
 import clients
-import coders
-import db_api
+# import coders
 from pathlib import Path
 from telegram.ext import (Updater,
                           CommandHandler,
                           ConversationHandler,
                           MessageHandler,
                           Filters)
-from PHPSupport_DB import setup
 
-setup()
-
+import db_api
 
 
 
 dotenv.load_dotenv(Path('venv', '.env'))
-bot_token = os.environ['PINKY']
+bot_token = os.environ['BOT_TG_TOKEN']
 
 
 def start(update, _):
@@ -48,13 +47,13 @@ client_conversation_handler = ConversationHandler(
 )
 dispatcher.add_handler(client_conversation_handler)
 
-coder_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('common', coders.start_coder_talk)],
-    states={
-        coders.E_ORDER: [MessageHandler(Filters.text & (~Filters.command), coders.expose_orders)],
-        coders.C_ORDER: [MessageHandler(Filters.text & (~Filters.command), coders.choose_order)]
-    },
-    fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
-)
-dispatcher.add_handler(coder_conversation_handler)
+# coder_conversation_handler = ConversationHandler(
+#     entry_points=[CommandHandler('common', coders.start_coder_talk)],
+#     states={
+#         coders.E_ORDER: [MessageHandler(Filters.text & (~Filters.command), coders.expose_orders)],
+#         coders.C_ORDER: [MessageHandler(Filters.text & (~Filters.command), coders.choose_order)]
+#     },
+#     fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
+# )
+# dispatcher.add_handler(coder_conversation_handler)
 updater.start_polling()

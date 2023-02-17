@@ -1,8 +1,8 @@
 from telegram.ext import ConversationHandler
-from PHPSupport_DB import setup
+
 from PHP_support_admin.models import Order
 
-setup()
+
 
 C_1, C_2, C_3, C_4 = range(4)  # точки ветвления разговора
 client_processing_order_id = []  # список для  хранения id заказа
