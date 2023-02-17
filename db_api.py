@@ -39,6 +39,6 @@ def create_order(tg_account, request, access_info):
     return Order.objects.create(client=client, request=request, access_info=access_info)
 
 
-def get_orders(tg_account):
+def get_active_orders(tg_account):
     client = get_object_or_404(Client, tg_account=tg_account)
-    return list(client.orders.values())  # здесь можно ограничить выдачу полей
+    return list(client.orders.filter(is_finished_by_client=False).values())  # здесь можно ограничить выдачу полей
