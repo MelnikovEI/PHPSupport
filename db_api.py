@@ -55,3 +55,8 @@ def get_order_info(order_id: int):
         'message_history': list(order.question.all().values_list('question'))
     }
     return status
+
+
+def get_order(id):
+    order = get_object_or_404(Order, id=id)
+    return order
