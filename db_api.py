@@ -31,13 +31,13 @@ def is_contractor_verified(tg_account: str) -> bool:
     return contractor.is_verified
 
 
-def create_order(tg_account, request, access_info):
+def create_order(tg_account, request, access_info, client_chat_id, contractor_chat_id):
     """Если клиент не подписан или не зарегистрирован, вернет None
     Возвращает идентификатор созданного заказа в формате tg_account_id заказа"""
     if not (is_subscription_active(tg_account)):
         return
     client = get_object_or_404(Client, tg_account=tg_account)
-    return Order.objects.create(client=client, request=request, access_info=access_info)
+    return Order.objects.create(client=client, request=request, access_info=access_info, client_chat_id=client_chat_id, contractor_chat_id=contractor_chat_id)
 
 
 def get_active_orders(tg_account):
