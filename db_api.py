@@ -119,12 +119,11 @@ def get_active_contractor_orders(tg_account):
     # здесь можно ограничить выдачу полей, в зависимости от того, что нужно?
 
 
-# =============================================================
-# TBD
-
 def get_available_orders():
     """Возвращает список доступных заказов (новых заказов, над которыми еще не началась работа"""
-    return []
+    return list(Order.objects.filter(contractor=None).values())
+
+# TBD =============================================================
 
 
 def get_contractor_order(order_id, tg_account):
