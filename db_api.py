@@ -2,10 +2,6 @@ import datetime
 
 from django.shortcuts import get_object_or_404
 from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
-from django.db.models.functions import Now
-from django.db.models.functions import (ExtractDay, ExtractHour, ExtractMinute, ExtractMonth,
-                                        ExtractQuarter, ExtractSecond, ExtractWeek, ExtractIsoWeekDay,
-                                        ExtractWeekDay, ExtractIsoYear, ExtractYear)
 
 
 def get_order(order_id: int):
