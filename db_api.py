@@ -133,9 +133,10 @@ def get_contractor_order(order_id, tg_account):
     else:
         return
 
-# TBD =============================================================
 
-
-def get_admin_info(order_id):
+def get_access_info(order_id):
     """Возвращает 'кренделя' заказа"""
-    pass
+    order = get_object_or_404(Order, id=order_id)
+    return order.access_info
+
+# TBD =============================================================
