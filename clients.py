@@ -4,8 +4,8 @@ from telegram.ext import ConversationHandler
 import db_api
 
 C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
-client_processing_order_id = []  # список для  хранения id заказа
-client_processing_order_text = []  # список для  хранения текста заказа
+client_processing_order_id = {}  # для  хранения id заказа
+client_processing_order_text = {}  # для  хранения текста заказа
 
 
 def start_client_talk(update, _):  # функция запускающая разговор
@@ -23,7 +23,8 @@ def create_order(update, _):  # функция которая просит те�
 
 
 def send_order(update, _):  # функция которя записывает текст заказа
-    client_processing_order_text.append(update.message.text)
+    tg_account = update.message.from_user.username
+    client_processing_order_text[tg_account] = update.message.text
     update.message.reply_text('input necessary access info in loose format')
     return C_5
 
@@ -32,7 +33,7 @@ def send_credits(update, _):  # функция которя записывает
     tg_account = update.message.from_user.username
     client_chat_id = update.message.chat.id
     contractor_chat_id = 0
-    request = client_processing_order_text[-1]
+    request = client_processing_order_text[tg_account]
     access_info = update.message.text
     order_id = db_api.create_order(tg_account, request, access_info, client_chat_id, contractor_chat_id)
     update.message.reply_text(
@@ -65,7 +66,8 @@ def expose_active_order(update, _):
 def work_with_order(update, _):
     order_id = int(update.message.text)
     order = db_api.get_order(order_id)
-    client_processing_order_id.append(order_id)
+    tg_account = order.client
+    client_processing_order_id[tg_account] = order_id
     contractor_chat_id = order.contractor_chat_id
     if contractor_chat_id:
         history_of_order = db_api.get_order_info(order_id)['message_history']
@@ -78,10 +80,11 @@ def work_with_order(update, _):
 
 
 def message_for_coder(update, context):
-    order_id = client_processing_order_id[-1]
+    tg_account = update.message.from_user.username
+    order_id = client_processing_order_id[tg_account]
     order = db_api.get_order(order_id)
     contractor_chat_id = order.contractor_chat_id
-    user = order.client.tg_account
+    user = tg_account
     text = update.message.text
     db_api.add_message(order_id, f'{user}: {update.message.text}')
     context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
@@ -95,7 +98,7 @@ def message_for_coder(update, context):
 def accept_order(update, _):
     user = update.message.from_user.username
     orders = db_api.get_active_client_orders(user)
-    update.message.reply_text('choose order for accepting from list below and input order id')
+    update.message.reply_text(f'{user} choose order for accepting from list below and input order id')
     for order in orders:
         update.message.reply_text(f"""
                                     order id: {order['id']},
