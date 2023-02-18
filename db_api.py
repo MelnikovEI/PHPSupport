@@ -123,12 +123,17 @@ def get_available_orders():
     """Возвращает список доступных заказов (новых заказов, над которыми еще не началась работа"""
     return list(Order.objects.filter(contractor=None).values())
 
-# TBD =============================================================
-
 
 def get_contractor_order(order_id, tg_account):
     """Возвращает order по id только если этот заказ взят этим подрядчиком"""
-    pass
+    contractor = get_object_or_404(Contractor, tg_account=tg_account)
+    order = get_object_or_404(Order, id=order_id)
+    if order.contractor == contractor:
+        return order
+    else:
+        return
+
+# TBD =============================================================
 
 
 def get_admin_info(order_id):
