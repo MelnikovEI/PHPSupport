@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import get_object_or_404
 from PHP_support_admin.models import Order, Question, Contractor, Client
 
@@ -68,12 +70,23 @@ def get_order(order_id: int):
     order = get_object_or_404(Order, id=order_id)
     return order
 
+
+def close_order_by_client(order_id):
+    """Закрывает заказ, когда клиент его акцептует"""
+    order = get_object_or_404(Order, id=order_id)
+    order.is_finished_by_client = True
+    order.date_closed = datetime.date.today()
+    order.save()
+
+
+def close_order_by_contractor(order_id):
+    """Закрывает заказ, когда клиент его акцептует"""
+    order = get_object_or_404(Order, id=order_id)
+    order.is_finished_by_contractor = True
+    order.save()
+
 # =============================================================
 # TBD
-
-def close_order(id):  # закрыает заказ когда клиент его акцептует (id - это id заказа)
-    pass
-
 def get_order_tax(): # возвращает фиксированную ставку за заказ
     pass
 
