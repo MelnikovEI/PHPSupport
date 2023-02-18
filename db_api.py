@@ -2,8 +2,25 @@ import datetime
 
 from django.shortcuts import get_object_or_404
 from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
+from django.db.models.functions import Now
+from django.db.models.functions import (ExtractDay, ExtractHour, ExtractMinute, ExtractMonth,
+                                        ExtractQuarter, ExtractSecond, ExtractWeek, ExtractIsoWeekDay,
+                                        ExtractWeekDay, ExtractIsoYear, ExtractYear)
 
 
+def get_order(order_id: int):
+    order = get_object_or_404(Order, id=order_id)
+    return order
+
+
+def add_message(order_id: int, message: str):
+    """Добавить сообщение в переписку между клиентом и подрядчиком"""
+    order = get_object_or_404(Order, id=order_id)
+    question = Question.objects.create(question=message)
+    order.question.add(question)
+
+
+# client block ============================================================================================
 def is_subscription_active(tg_account: str) -> bool:
     """
     :param tg_account: account of a client
@@ -16,20 +33,6 @@ def is_subscription_active(tg_account: str) -> bool:
     except Client.DoesNotExist:
         return None
     return client.is_subscription_active()
-
-
-def is_contractor_verified(tg_account: str) -> bool:
-    """
-    :param tg_account: tg account of contractor
-    :return: None - contractor is not registered
-    True - contractor's is verified and can take orders
-    False - contractor is registered, but has no rights to take orders
-    """
-    try:
-        contractor = Contractor.objects.get(tg_account=tg_account)
-    except Contractor.DoesNotExist:
-        return None
-    return contractor.is_verified
 
 
 def create_order(tg_account, request, access_info, client_chat_id, contractor_chat_id):
@@ -59,24 +62,27 @@ def get_order_info(order_id: int):
     return order_status
 
 
-def add_message(order_id: int, message: str):
-    """Добавить сообщение в переписку между клиентом и подрядчиком"""
-    order = get_object_or_404(Order, id=order_id)
-    question = Question.objects.create(question=message)
-    order.question.add(question)
-
-
-def get_order(order_id: int):
-    order = get_object_or_404(Order, id=order_id)
-    return order
-
-
 def close_order_by_client(order_id):
     """Закрывает заказ, когда клиент его акцептует"""
     order = get_object_or_404(Order, id=order_id)
     order.is_finished_by_client = True
     order.date_closed = datetime.date.today()
     order.save()
+
+
+# contractor block ============================================================================================
+def is_contractor_verified(tg_account: str) -> bool:
+    """
+    :param tg_account: tg account of contractor
+    :return: None - contractor is not registered
+    True - contractor's is verified and can take orders
+    False - contractor is registered, but has no rights to take orders
+    """
+    try:
+        contractor = Contractor.objects.get(tg_account=tg_account)
+    except Contractor.DoesNotExist:
+        return None
+    return contractor.is_verified
 
 
 def close_order_by_contractor(order_id):
@@ -91,11 +97,25 @@ def get_order_rate():
     return Rate.objects.latest("order_rate").order_rate
 
 
+def get_current_month_closed_orders(tg_account):
+    """Возвращает кол-во принятых клиентом заказов за текущий месяц"""
+    contractor = get_object_or_404(Contractor, tg_account=tg_account)
+    today = datetime.date.today()
+    the_first_day_in_cur_month = datetime.date(today.year, today.month, 1)
+    finished_orders_quantity = contractor.orders.filter(is_finished_by_client=True,
+                                                        date_closed__gte=the_first_day_in_cur_month,
+                                                        date_closed__lte=today,
+                                                        ).count()
+    return finished_orders_quantity
+
+
+def get_current_month_salary(tg_account):
+    """Возвращает заработанную подрядчиком сумму за текущий месяц"""
+    return get_order_rate() * get_current_month_closed_orders(tg_account)
+
 # =============================================================
 # TBD
 
-def get_summary(): # возвращает сумму ставку за месяц
-    pass
 
 def get_active_contracnor_orders(tg_account): # возвращает список открытых заказов по контракторуб типа get_active_orders
     pass

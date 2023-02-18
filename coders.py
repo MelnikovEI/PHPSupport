@@ -29,7 +29,7 @@ def order(update, _):
 
 
 def summary(update, _):
-    summary = db_api.get_summary()
+    summary = db_api.get_current_month_salary()
     update.message.reply_text(f'your summary is {summary}')
     return ConversationHandler.END
 
