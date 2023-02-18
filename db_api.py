@@ -120,14 +120,16 @@ def take_order(tg_account, order_id):
     pass
 
 
-def get_avaliable_orders():
-    """возвращает список доступных заказов (новых заказов над которыми еще не началась работа"""
+def get_available_orders():
+    """Возвращает список доступных заказов (новых заказов, над которыми еще не началась работа"""
     return []
 
-def get_contractor_orser(id,username):
-    """возвращает order по id только если этот заказ взят этим контрактором"""
-    ...
 
-def get_admin_info(id):
-    """возвращает кренделя заказа"""
-    ...
+def get_contractor_order(order_id, tg_account):
+    """Возвращает order по id только если этот заказ взят этим подрядчиком"""
+    pass
+
+
+def get_admin_info(order_id):
+    """Возвращает 'кренделя' заказа"""
+    pass
