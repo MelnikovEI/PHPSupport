@@ -79,10 +79,10 @@ def is_contractor_verified(tg_account: str) -> bool:
     return contractor.is_verified
 
 
-def take_order(tg_account, order_id):
+def take_order(tg_account, order_id, estimation: str):
     """Подрядчик берет заказ в работу"""
     contractor = get_object_or_404(Contractor, tg_account=tg_account)
-    Order.objects.filter(id=order_id).update(contractor=contractor)
+    Order.objects.filter(id=order_id).update(contractor=contractor, estimation=estimation)
 
 
 def close_order_by_contractor(order_id):
