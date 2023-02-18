@@ -1,5 +1,4 @@
-
-#===============================================
+# ===============================================
 import os
 import dotenv
 import clients
@@ -12,8 +11,6 @@ from telegram.ext import (Updater,
                           Filters)
 
 import db_api
-
-
 
 dotenv.load_dotenv(Path('venv', '.env'))
 bot_token = os.environ['BOT_TG_TOKEN']
@@ -36,12 +33,17 @@ dispatcher.add_handler(start_handler)
 
 client_conversation_handler = ConversationHandler(
     entry_points=[CommandHandler('begin', clients.start_client_talk), CommandHandler('create', clients.create_order),
-                  CommandHandler('active', clients.expose_active_order)],
+                  CommandHandler('active', clients.expose_active_order),
+                  CommandHandler('accepted', clients.accept_order)],
     states={
-        clients.C_1: [CommandHandler('create', clients.create_order), CommandHandler('active', clients.expose_active_order)],
+        clients.C_1: [CommandHandler('create', clients.create_order),
+                      CommandHandler('active', clients.expose_active_order),
+                      CommandHandler('accepted', clients.accept_order)],
         clients.C_2: [MessageHandler(Filters.text & (~Filters.command), clients.send_order)],
         clients.C_3: [MessageHandler(Filters.text & (~Filters.command), clients.work_with_order)],
-        clients.C_4: [MessageHandler(Filters.text & (~Filters.command), clients.message_for_coder)]
+        clients.C_4: [MessageHandler(Filters.text & (~Filters.command), clients.message_for_coder)],
+        clients.C_5: [MessageHandler(Filters.text & (~Filters.command), clients.send_credits)],
+        clients.C_6: [MessageHandler(Filters.text & (~Filters.command), clients.closing_order)]
     },
     fallbacks=[CommandHandler('cancel', clients.client_cancel)]
 )
