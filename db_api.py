@@ -79,8 +79,14 @@ def is_contractor_verified(tg_account: str) -> bool:
     return contractor.is_verified
 
 
+def take_order(tg_account, order_id):
+    """Подрядчик берет заказ в работу"""
+    contractor = get_object_or_404(Contractor, tg_account=tg_account)
+    Order.objects.filter(id=order_id).update(contractor=contractor)
+
+
 def close_order_by_contractor(order_id):
-    """Закрывает заказ, когда клиент его акцептует"""
+    """Подрядчик говорит, что закончил работу"""
     Order.objects.filter(id=order_id).update(is_finished_by_contractor=True)
 
 
@@ -115,10 +121,6 @@ def get_active_contractor_orders(tg_account):
 
 # =============================================================
 # TBD
-
-def take_order(tg_account, order_id):
-    pass
-
 
 def get_available_orders():
     """Возвращает список доступных заказов (новых заказов, над которыми еще не началась работа"""
