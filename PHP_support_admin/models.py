@@ -39,8 +39,8 @@ class Order(models.Model):
     question = models.ManyToManyField(Question, verbose_name='question', related_name='order', blank=True)
     request = models.TextField('description of the request from client')
     access_info = models.CharField('web site access information', max_length=400)
-    date_estimation = models.DateField(verbose_name='estimation date of completing job from contractor',
-                                       null=True, blank=True)
+    estimation = models.CharField(verbose_name='estimation date of completing job from contractor', max_length=200,
+                                       blank=True)
     is_finished_by_contractor = models.BooleanField("is order finished from contractor's point of view", default=False)
     is_finished_by_client = models.BooleanField("is order finished from client's point of view", default=False)
     date_closed = models.DateField(verbose_name='date of closing the order by client', null=True, blank=True)
