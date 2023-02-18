@@ -42,10 +42,11 @@ def create_order(tg_account, request, access_info, client_chat_id, contractor_ch
     return order.id
 
 
-def get_active_orders(tg_account):
+def get_active_client_orders(tg_account):
     """Возвращает только не закрытые клиентом заказы"""
     client = get_object_or_404(Client, tg_account=tg_account)
-    return list(client.orders.filter(is_finished_by_client=False).values())  # здесь можно ограничить выдачу полей
+    return list(client.orders.filter(is_finished_by_client=False).values())
+    # здесь можно ограничить выдачу полей, в зависимости от того, что нужно?
 
 
 def get_order_info(order_id: int):
@@ -109,9 +110,15 @@ def get_current_month_salary(tg_account):
     """Возвращает заработанную подрядчиком сумму за текущий месяц"""
     return get_order_rate() * get_current_month_closed_orders(tg_account)
 
+
+def get_active_contractor_orders(tg_account):
+    """возвращает список открытых заказов по контрактору типа get_active_orders"""
+    contractor = get_object_or_404(Contractor, tg_account=tg_account)
+    return list(contractor.orders.filter(is_finished_by_client=False).values())
+    # здесь можно ограничить выдачу полей, в зависимости от того, что нужно?
+
+
 # =============================================================
 # TBD
 
 
-def get_active_contracnor_orders(tg_account): # возвращает список открытых заказов по контракторуб типа get_active_orders
-    pass

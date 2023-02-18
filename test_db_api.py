@@ -7,7 +7,7 @@ import db_api
 print(db_api.is_subscription_active('TemWithFrog'))
 print(db_api.is_contractor_verified('kaser137'))
 # print(db_api.create_order('TemWithFrog', "Это новое описание запроса", "Реквизиты для сайта admin, admin", 111, 222))
-print(db_api.get_active_orders('TemWithFrog'))
+print(db_api.get_active_client_orders('TemWithFrog'))
 print(db_api.get_order_info(12))
 # print(db_api.add_message(12, 'Некое сообщение...'))
 print(db_api.get_order(12))

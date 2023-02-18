@@ -48,7 +48,7 @@ def send_credits(update, _):  # функция которя записывает
 
 def expose_active_order(update, _):
     user = update.message.from_user.username
-    orders = db_api.get_active_orders(user)
+    orders = db_api.get_active_client_orders(user)
     for order in orders:
         update.message.reply_text(f"""
                                 order id: {order['id']},
@@ -94,7 +94,7 @@ def message_for_coder(update, context):
 # блок закрытия заказа===========================================================================================
 def accept_order(update, _):
     user = update.message.from_user.username
-    orders = db_api.get_active_orders(user)
+    orders = db_api.get_active_client_orders(user)
     update.message.reply_text('choose order for accepting from list below and input order id')
     for order in orders:
         update.message.reply_text(f"""
