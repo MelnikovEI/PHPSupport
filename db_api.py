@@ -128,3 +128,7 @@ def take_order(tg_account, order_id):
 def get_avaliable_orders():
     """возвращает список доступных заказов (новых заказов над которыми еще не началась работа"""
     return []
+
+def get_contractor_orser(id,username):
+    """возвращает order по id только если этот заказ взят этим контрактором"""
+    ...

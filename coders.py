@@ -48,7 +48,7 @@ def active_orders(update, _):
     orders = db_api.get_active_contractor_orders(user)
     if not orders:
         update.message.reply_text("You don't have any active orders")
-        return C_4
+        return C_1
 
     for order in orders:
         update.message.reply_text(f"""
@@ -77,6 +77,25 @@ def get_avaliable_orders(update, _):
                                   )
     update.message.reply_text('for choose order for working, input order id')
     return
+
+
+def work_with_order(update, _):
+    order_id = int(update.message.text)
+    user = update.message.from_user.username
+    # order = db_api.get_contractor_orser(order_id,user)
+    ##---<ALARM!!!> временная заглушка тут
+    order = db_api.get_order(order_id)
+    #--------------------
+    if not order:
+        update.message.reply_text('You entered an order ID that does not exist')
+        return C_3
+    update.message.reply_text("""
+    type /question to ask question
+    type /get_admin for get admin access inforamtion
+    type /submit to confirm order
+    type /cancel for quit
+    """)
+
 
 # end orders block======================================================================================================
 def coder_cancel(update, _):  # функция прерывающая разговор
