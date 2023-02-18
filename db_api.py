@@ -121,4 +121,5 @@ def get_active_contractor_orders(tg_account):
 # =============================================================
 # TBD
 
-
+def take_order(tg_account, order_id):
+    pass
