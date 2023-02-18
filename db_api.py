@@ -61,10 +61,7 @@ def get_order_info(order_id: int):
 
 def close_order_by_client(order_id):
     """Закрывает заказ, когда клиент его акцептует"""
-    order = get_object_or_404(Order, id=order_id)
-    order.is_finished_by_client = True
-    order.date_closed = datetime.date.today()
-    order.save()
+    Order.objects.filter(id=order_id).update(is_finished_by_client=True, date_closed=datetime.date.today())
 
 
 # contractor block ============================================================================================
@@ -81,12 +78,10 @@ def is_contractor_verified(tg_account: str) -> bool:
         return None
     return contractor.is_verified
 
-#тут лучше update использовать ))
+
 def close_order_by_contractor(order_id):
     """Закрывает заказ, когда клиент его акцептует"""
-    order = get_object_or_404(Order, id=order_id)
-    order.is_finished_by_contractor = True
-    order.save()
+    Order.objects.filter(id=order_id).update(is_finished_by_contractor=True)
 
 
 def get_order_rate():
