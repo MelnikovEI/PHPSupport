@@ -23,7 +23,7 @@ def salary(update, _):
 
 
 def order(update, _):
-    order_tax = db_api.get_order_tax()
+    order_tax = db_api.get_order_rate()
     update.message.reply_text(f'your tax for order is {order_tax}')
     return ConversationHandler.END
 

@@ -1,7 +1,7 @@
 import datetime
 
 from django.shortcuts import get_object_or_404
-from PHP_support_admin.models import Order, Question, Contractor, Client
+from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
 
 
 def is_subscription_active(tg_account: str) -> bool:
@@ -85,10 +85,14 @@ def close_order_by_contractor(order_id):
     order.is_finished_by_contractor = True
     order.save()
 
+
+def get_order_rate():
+    """Возвращает фиксированную ставку за заказ, последнюю, в которой были изменения"""
+    return Rate.objects.latest("order_rate").order_rate
+
+
 # =============================================================
 # TBD
-def get_order_tax(): # возвращает фиксированную ставку за заказ
-    pass
 
 def get_summary(): # возвращает сумму ставку за месяц
     pass

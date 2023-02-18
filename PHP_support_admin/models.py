@@ -47,3 +47,8 @@ class Order(models.Model):
 
     def __str__(self):
         return f'{self.client.tg_account}_{self.id}'
+
+
+class Rate(models.Model):
+    order_rate = models.PositiveIntegerField(verbose_name="salary (rub) to contractor for 1 order")
+    # valid_date = models.DateField(verbose_name="The date of starting ")
