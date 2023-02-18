@@ -50,11 +50,11 @@ def get_active_orders(tg_account):
 def get_order_info(order_id: int):
     """Возвращает статус заказа: определен ли подрядчик, список сообщений к заказу"""
     order = get_object_or_404(Order, id=order_id)
-    status = {
+    order_status = {
         'is_contractor_defined': bool(order.contractor),
         'message_history': list(order.question.all().values_list('question', flat=True))
     }
-    return status
+    return order_status
 
 
 def add_message(order_id: int, message: str):
@@ -64,11 +64,12 @@ def add_message(order_id: int, message: str):
     order.question.add(question)
 
 
+def get_order(order_id: int):
+    order = get_object_or_404(Order, id=order_id)
+    return order
+
 # =============================================================
 # TBD
-def get_order(id):
-    order = get_object_or_404(Order, id=id)
-    return order
 
 def close_order(id):  # закрыает заказ когда клиент его акцептует (id - это id заказа)
     pass
