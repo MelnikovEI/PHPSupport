@@ -52,31 +52,24 @@ def get_order_info(order_id: int):
     order = get_object_or_404(Order, id=order_id)
     status = {
         'is_contractor_defined': bool(order.contractor),
-        'message_history': list(order.question.all().values_list('question'))
+        'message_history': list(order.question.all().values_list('question', flat=True))
     }
     return status
 
 
 def add_message(order_id: int, message: str):
+    """Добавить сообщение в переписку между клиентом и подрядчиком"""
     order = get_object_or_404(Order, id=order_id)
-    order.question = Question
-    pass
+    question = Question.objects.create(question=message)
+    order.question.add(question)
 
 
 # =============================================================
+# TBD
 def get_order(id):
     order = get_object_or_404(Order, id=id)
     return order
 
-
-def add_message(id, message):
-    order = get_order(id)
-    order.question.create(question=message)
-    order.save()
-
-
-# ==================================================================
-# функции которые нужны=============================================
 def close_order(id):  # закрыает заказ когда клиент его акцептует (id - это id заказа)
     pass
 
