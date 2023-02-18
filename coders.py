@@ -1,4 +1,4 @@
-import bd
+# import bd
 import telegram
 import db_api
 from telegram.ext import ConversationHandler
@@ -29,7 +29,8 @@ def order(update, _):
 
 
 def summary(update, _):
-    summary = db_api.get_current_month_salary()
+    user = update.message.from_user.username
+    summary = db_api.get_current_month_salary(user)
     update.message.reply_text(f'your summary is {summary}')
     return ConversationHandler.END
 

@@ -32,7 +32,8 @@ start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 
 client_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('begin', clients.start_client_talk), CommandHandler('create', clients.create_order),
+    entry_points=[CommandHandler('begin', clients.start_client_talk),
+                  CommandHandler('create', clients.create_order),
                   CommandHandler('active', clients.expose_active_order),
                   CommandHandler('accepted', clients.accept_order)],
     states={
