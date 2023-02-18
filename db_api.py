@@ -123,3 +123,8 @@ def get_active_contractor_orders(tg_account):
 
 def take_order(tg_account, order_id):
     pass
+
+
+def get_avaliable_orders():
+    """возвращает список доступных заказов (новых заказов над которыми еще не началась работа"""
+    return []
