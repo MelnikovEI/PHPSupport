@@ -37,9 +37,11 @@ def create_order(tg_account, request, access_info, client_chat_id, contractor_ch
     if not (is_subscription_active(tg_account)):
         return
     client = get_object_or_404(Client, tg_account=tg_account)
+    # ========================================================================================================================================================
     order = Order.objects.create(client=client, request=request, access_info=access_info, client_chat_id=client_chat_id, contractor_chat_id=contractor_chat_id)
+    order.save()
     return order.id
-
+    # =========================================================================================================================================================
 
 def get_active_orders(tg_account):
     """Возвращает только не закрытые клиентом заказы"""
@@ -56,7 +58,7 @@ def get_order_info(order_id: int):
     }
     return status
 
-
+# =============================================================
 def get_order(id):
     order = get_object_or_404(Order, id=id)
     return order
@@ -65,3 +67,5 @@ def get_order(id):
 def add_message(id, message):
     order = get_order(id)
     order.question.create(question=message)
+    order.save()
+# ==================================================================
