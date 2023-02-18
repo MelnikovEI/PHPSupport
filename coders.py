@@ -95,6 +95,24 @@ def work_with_order(update, _):
     type /submit to confirm order
     type /cancel for quit
     """)
+    return C_5
+
+
+def submit_order(update, _):
+    order_id = int(update.message.text)
+    db_api.close_order_by_contractor(order_id)
+    update.message.reply_text(
+        """
+        you have closed the order, the customer will be notified about it.
+        The order will be considered closed only after confirmation by the customer.
+        """
+    )
+
+def get_admin(update, _):
+    ...
+
+def ask_question(update, _):
+    ...
 
 
 # end orders block======================================================================================================

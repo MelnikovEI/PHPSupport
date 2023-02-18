@@ -81,7 +81,7 @@ def is_contractor_verified(tg_account: str) -> bool:
         return None
     return contractor.is_verified
 
-
+#тут лучше update использовать ))
 def close_order_by_contractor(order_id):
     """Закрывает заказ, когда клиент его акцептует"""
     order = get_object_or_404(Order, id=order_id)
@@ -131,4 +131,8 @@ def get_avaliable_orders():
 
 def get_contractor_orser(id,username):
     """возвращает order по id только если этот заказ взят этим контрактором"""
+    ...
+
+def get_admin_info(id):
+    """возвращает кренделя заказа"""
     ...

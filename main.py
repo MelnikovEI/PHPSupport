@@ -69,6 +69,12 @@ coder_conversation_handler = ConversationHandler(
                      CommandHandler('available',coders.get_avaliable_orders)],
 
         coders.C_4: [MessageHandler(Filters.text & (~Filters.command), coders.work_with_order)],
+
+        coders.C_5: [
+            CommandHandler('submit', coders.submit_order),
+            CommandHandler('get_admin',coders.get_admin),
+            CommandHandler('question',coders.ask_question)
+        ],
     },
     fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
 )
