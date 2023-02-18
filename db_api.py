@@ -1,5 +1,5 @@
 import datetime
-
+import PHPSupport_DB
 from django.shortcuts import get_object_or_404
 from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
 
@@ -81,7 +81,7 @@ def is_contractor_verified(tg_account: str) -> bool:
         return None
     return contractor.is_verified
 
-
+#тут лучше update использовать ))
 def close_order_by_contractor(order_id):
     """Закрывает заказ, когда клиент его акцептует"""
     order = get_object_or_404(Order, id=order_id)
@@ -121,4 +121,18 @@ def get_active_contractor_orders(tg_account):
 # =============================================================
 # TBD
 
+def take_order(tg_account, order_id):
+    pass
 
+
+def get_avaliable_orders():
+    """возвращает список доступных заказов (новых заказов над которыми еще не началась работа"""
+    return []
+
+def get_contractor_orser(id,username):
+    """возвращает order по id только если этот заказ взят этим контрактором"""
+    ...
+
+def get_admin_info(id):
+    """возвращает кренделя заказа"""
+    ...

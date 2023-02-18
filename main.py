@@ -32,7 +32,8 @@ start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 
 client_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('begin', clients.start_client_talk), CommandHandler('create', clients.create_order),
+    entry_points=[CommandHandler('begin', clients.start_client_talk),
+                  CommandHandler('create', clients.create_order),
                   CommandHandler('active', clients.expose_active_order),
                   CommandHandler('accepted', clients.accept_order)],
     states={
@@ -50,12 +51,30 @@ client_conversation_handler = ConversationHandler(
 dispatcher.add_handler(client_conversation_handler)
 
 coder_conversation_handler = ConversationHandler(
-    entry_points=[CommandHandler('common', coders.start_coder_talk), CommandHandler('salary', coders.salary),
-                  CommandHandler('order', coders.order), CommandHandler('summary', coders.summary)],
+    entry_points=[
+        CommandHandler('common', coders.start_coder_talk),
+        CommandHandler('salary', coders.salary),
+        CommandHandler('order', coders.order),
+        CommandHandler('summary', coders.summary)#,
+        # CommandHandler('orders', coders.orders)
+                  ],
     states={
-        coders.C_1: [CommandHandler('salary', coders.salary)],
-        coders.C_2: [CommandHandler('order', coders.order), CommandHandler('summary', coders.summary)],
+        coders.C_1: [CommandHandler('salary', coders.salary),
+                     CommandHandler('orders', coders.orders)],
 
+        coders.C_2: [CommandHandler('order', coders.order),
+                     CommandHandler('summary', coders.summary)],
+
+        coders.C_3: [CommandHandler('active_orders', coders.active_orders),
+                     CommandHandler('available',coders.get_avaliable_orders)],
+
+        coders.C_4: [MessageHandler(Filters.text & (~Filters.command), coders.work_with_order)],
+
+        coders.C_5: [
+            CommandHandler('submit', coders.submit_order),
+            CommandHandler('get_admin',coders.get_admin),
+            CommandHandler('question',coders.ask_question)
+        ],
     },
     fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
 )
