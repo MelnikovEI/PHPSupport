@@ -113,6 +113,7 @@ def closing_order(update, context):
     contractor_chat_id = order.contractor_chat_id
     user = order.client.tg_account
     db_api.add_message(order_id, f"you've closed order {order_id}")
+    #db_api.close_order(order_id) функция закрытия заказа Евгений еще не написал
     try:
         context.bot.send_message(chat_id=contractor_chat_id, text=f'order id: {order_id}  was accepted by {user}')
         update.message.reply_text('your order has been successfully closed,\nchao,\nyou also can press any command:\n'
