@@ -99,8 +99,9 @@ def work_with_order(update, _):
 
 
 def submit_order(update, _):
-    order_id = int(update.message.text)
-    db_api.close_order_by_contractor(order_id)
+    # Надо подумать как получить id ))
+    # order_id = int(update.message.text)
+    # db_api.close_order_by_contractor(order_id)
     update.message.reply_text(
         """
         you have closed the order, the customer will be notified about it.
