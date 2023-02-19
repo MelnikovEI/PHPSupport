@@ -28,9 +28,10 @@ class ContractorAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['tg_account', 'tolal_opened_orders']
+    list_display = ['tg_account', 'total_opened_orders']
 
-    def tolal_opened_orders(self, obj):
+    @admin.display(ordering='-total_opened_orders')
+    def total_opened_orders(self, obj):
         return obj.orders.all().count()
 
 
@@ -38,3 +39,4 @@ class ClientAdmin(admin.ModelAdmin):
 class OrderStatAdmin(admin.ModelAdmin):
     list_display = ['year', 'month', 'month_order_quantity']
     list_filter = ['year', 'month']
+    ordering = ('-year', '-month')
