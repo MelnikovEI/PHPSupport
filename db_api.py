@@ -133,12 +133,15 @@ def get_available_orders():
 
 def get_contractor_order(order_id, tg_account):
     """Возвращает order по id только если этот заказ взят этим подрядчиком"""
-    contractor = get_object_or_404(Contractor, tg_account=tg_account)
-    order = get_object_or_404(Order, id=order_id)
+    try:
+        contractor = get_object_or_404(Contractor, tg_account=tg_account)
+        order = get_object_or_404(Order, id=order_id)
+    except:
+        return None
     if order.contractor == contractor:
         return order
     else:
-        return
+        return None
 
 
 def get_access_info(order_id):
