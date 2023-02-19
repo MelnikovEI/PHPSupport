@@ -91,6 +91,7 @@ def work_with_order(update, _):
     type /get_admin for get admin access information
     type /submit to confirm order
     type /cancel for quit
+    type /active_orders for back upper
     """)
     return C_5
 
@@ -140,12 +141,12 @@ def message_for_client(update, context):
     order = db_api.get_order(order_id)
     client_chat_id = order.client_chat_id
     text = update.message.text
-    db_api.add_message(order_id, f'contractor {user}: {text}')
-    context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text+
+    db_api.add_message(order_id, f'contractor: {text}')
+    context.bot.send_message(chat_id=client_chat_id, text=f'message from contractor, order id: {order_id} \n' + text+
                                                           '\nfor answer /active.')
     update.message.reply_text('your message has been successfully send,\nchao.\n for back upper /active_orders')
     update.message.reply_text(CODER_AVALIABLE_COMMANDS)
-    return C_9
+    return ConversationHandler.END
 
 
 # end active orders=====================================================================================================
@@ -203,6 +204,6 @@ def send_estimate_data_confirmation_order(update, context):
 
 # end orders block======================================================================================================
 def coder_cancel(update, _):  # функция прерывающая разговор
-    update.message.reply_text('as you want')
+    update.message.reply_text('as you want, for start again /common')
     return ConversationHandler.END
 

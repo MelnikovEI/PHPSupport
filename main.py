@@ -13,7 +13,7 @@ from telegram.ext import (Updater,
 import db_api
 
 dotenv.load_dotenv(Path('venv', '.env'))
-bot_token = os.environ['BOT_TG_TOKEN']
+bot_token = os.environ['PINKY']
 
 
 def start(update, _):
@@ -68,7 +68,8 @@ coder_conversation_handler = ConversationHandler(
     ],
     states={
         coders.C_1: [CommandHandler('salary', coders.salary),
-                     CommandHandler('orders', coders.orders)],
+                     CommandHandler('orders', coders.orders),
+                     CommandHandler('common', coders.start_coder_talk)],
 
         coders.C_2: [CommandHandler('order', coders.order),
                      CommandHandler('summary', coders.summary),
@@ -81,19 +82,30 @@ coder_conversation_handler = ConversationHandler(
                      CommandHandler('common', coders.start_coder_talk)],
 
         coders.C_4: [MessageHandler(Filters.text & (~Filters.command), coders.work_with_order),
-                     CommandHandler('orders', coders.orders)],
+                     CommandHandler('orders', coders.orders),
+                     CommandHandler('common', coders.start_coder_talk),
+                     CommandHandler('active_orders', coders.active_orders)],
 
         coders.C_5: [
             CommandHandler('submit', coders.submit_order),
             CommandHandler('get_admin', coders.get_admin),
-            CommandHandler('question', coders.ask_question)
+            CommandHandler('question', coders.ask_question),
+            CommandHandler('common', coders.start_coder_talk),
+            CommandHandler('active_orders', coders.active_orders)
         ],
         coders.C_6: [MessageHandler(Filters.text & (~Filters.command), coders.message_for_client),
+                     CommandHandler('common', coders.start_coder_talk),
                      CommandHandler('active_orders', coders.active_orders)],
         coders.C_7: [MessageHandler(Filters.text & (~Filters.command), coders.choose_order),
-                     CommandHandler('orders', coders.orders)],
+                     CommandHandler('orders', coders.orders),
+                     CommandHandler('common', coders.start_coder_talk),
+                     CommandHandler('active_orders', coders.active_orders)
+                     ],
         coders.C_8: [MessageHandler(Filters.text & (~Filters.command), coders.send_estimate_data_confirmation_order),
-                     CommandHandler('available', coders.get_avaliable_orders)]
+                     CommandHandler('available', coders.get_avaliable_orders),
+                     CommandHandler('common', coders.start_coder_talk),
+                     CommandHandler('active_orders', coders.active_orders)
+                     ]
     },
     fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
 )

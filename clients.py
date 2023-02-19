@@ -69,7 +69,6 @@ def work_with_order(update, _):
     order = db_api.get_order(order_id)
     tg_account = str(order.client)
     client_processing_order_id[tg_account] = order_id
-    print(client_processing_order_id)
     contractor_chat_id = order.contractor_chat_id
     if contractor_chat_id:
         history_of_order = db_api.get_order_info(order_id)['message_history']
@@ -89,8 +88,8 @@ def message_for_coder(update, context):
     order = db_api.get_order(order_id)
     contractor_chat_id = order.contractor_chat_id
     text = update.message.text
-    db_api.add_message(order_id, f'client {user}: {text}')
-    context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' +
+    db_api.add_message(order_id, f'client: {text}')
+    context.bot.send_message(chat_id=contractor_chat_id, text=f'message from client, order id: {order_id} \n' +
                                                               text+'\n'+'(for menu /active_orders)')
     update.message.reply_text('your message has been successfully send,\nchao,\n you also can press any command:\n'
                               ' /start, /begin, /create, /active, /accepted')
@@ -102,7 +101,7 @@ def message_for_coder(update, context):
 def accept_order(update, _):
     user = update.message.from_user.username
     orders = db_api.get_active_client_orders(user)
-    update.message.reply_text(f'{user} choose order for accepting from list below and input order id')
+    update.message.reply_text('choose order for accepting from list below and input order id')
     for order in orders:
         update.message.reply_text(f"""
                                     order id: {order['id']},
@@ -121,11 +120,11 @@ def closing_order(update, context):
     contractor_chat_id = order.contractor_chat_id
     user = order.client.tg_account
     db_api.close_order_by_client(order_id)
-    db_api.add_message(order_id, f"client {user} has closed order {order_id}")
+    db_api.add_message(order_id, f"client has closed order {order_id}")
 
     try:
         context.bot.send_message(chat_id=contractor_chat_id, text=f'order id: {order_id}  was accepted by '
-                                                                  f'{user}\n(for menu /common)')
+                                                                  f'client\n(for menu /active_orders)')
         update.message.reply_text('your order has been successfully closed,\nchao,\nyou also can press any command:\n'
                                   ' /start, /begin, /create, /active, /accepted')
     except telegram.error.BadRequest:
@@ -138,5 +137,5 @@ def closing_order(update, context):
 # конец блока закрытия заказа===========================================================================================
 
 def client_cancel(update, _):  # функция прерывающая разговор
-    update.message.reply_text('as you want')
+    update.message.reply_text('as you want, for start again /begin')
     return ConversationHandler.END
