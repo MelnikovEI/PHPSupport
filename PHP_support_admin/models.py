@@ -33,8 +33,9 @@ class Question(models.Model):
 
 
 class Order(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='client', related_name='orders')
-    contractor = models.ForeignKey(Contractor, on_delete=models.CASCADE, verbose_name='contractor',
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, verbose_name='client', related_name='orders',
+                               null=True)
+    contractor = models.ForeignKey(Contractor, on_delete=models.SET_NULL, verbose_name='contractor',
                                    related_name='orders', null=True, blank=True)
     question = models.ManyToManyField(Question, verbose_name='question', related_name='order', blank=True)
     request = models.TextField('description of the request from client')

@@ -148,5 +148,7 @@ def get_access_info(order_id):
 
 # TBD =============================================================
 def contractor_choose_order(order_id, tg_account, contractor_chat_id, estimate): # проверить может ли контрактор брать новые заказы, свободен ли данный заказ и потом соответсвенно обновить заказ
+    # Для этого уже есть функция take_order, о которой вчера говорили.
+    # Проверить, валидность подрядчика - is_contractor_verified
     pass
     return # True/False
