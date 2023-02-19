@@ -1,4 +1,4 @@
-# CakeBot
+# PHPSupportBot
 https://t.me/PHPSupportBot
 
 Это база данных тортов для заказа и телеграм бот
