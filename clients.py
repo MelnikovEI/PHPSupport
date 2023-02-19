@@ -63,7 +63,7 @@ def expose_active_order(update, _):
                                 order id: {order['id']},
                                 task: {order['request']},
                                 Contractor: {'Назначен' if order['contractor_id'] else 'Неназначен'},
-                                
+                                Сроки: {order['estimation']}
                                 """
                                   )
 
@@ -102,7 +102,6 @@ def work_with_order(update, _):
 
 def message_for_coder(update, context):
     user = update.message.from_user.username
-    print(client_processing_order_id)
     order_id = client_processing_order_id[user]
     order = db_api.get_order(order_id)
     contractor_chat_id = order.contractor_chat_id
