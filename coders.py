@@ -78,13 +78,12 @@ def work_with_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
-    # order = db_api.get_contractor_orser(order_id,user)
-    # ---<ALARM!!!> временная заглушка тут
-    order = db_api.get_order(order_id)
+    order = db_api.get_contractor_orser(order_id,user)
     # --------------------
     if not order:
         update.message.reply_text('You entered an order ID that does not exist')
-        return C_3
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        return ConversationHandler.END
     update.message.reply_text("""
     type /question to ask question
     type /get_admin for get admin access information
