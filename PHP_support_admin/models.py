@@ -46,6 +46,7 @@ class Order(models.Model):
                                   blank=True)
     is_finished_by_contractor = models.BooleanField("is order finished from contractor's point of view", default=False)
     is_finished_by_client = models.BooleanField("is order finished from client's point of view", default=False)
+    date_opened = models.DateField(verbose_name='date of opening the order by client', null=True, blank=True)
     date_closed = models.DateField(verbose_name='date of closing the order by client', null=True, blank=True)
 
     client_chat_id = models.IntegerField(verbose_name='chat id to send messages to client', null=True, blank=True)
