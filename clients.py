@@ -91,7 +91,7 @@ def message_for_coder(update, context):
     text = update.message.text
     db_api.add_message(order_id, f'client {user}: {text}')
     context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' +
-                                                              text+'\n'+'(for menu /common)')
+                                                              text+'\n'+'(for menu /active_orders)')
     update.message.reply_text('your message has been successfully send,\nchao,\n you also can press any command:\n'
                               ' /start, /begin, /create, /active, /accepted')
     return ConversationHandler.END
