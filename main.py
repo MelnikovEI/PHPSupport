@@ -19,9 +19,9 @@ bot_token = os.environ['BOT_TG_TOKEN']
 def start(update, _):
     username = update.message.chat.username
     if db_api.is_contractor_verified(username):
-        update.message.reply_text('wellcome, dear coder /common for coding')
+        update.message.reply_text('welcome, dear coder /common for coding')
     elif db_api.is_subscription_active(username):
-        update.message.reply_text('wellcome, dear client type /begin for cooperate')
+        update.message.reply_text('welcome, dear client type /begin for cooperate')
     else:
         update.message.reply_text('you have to contact with owners ')
 

@@ -34,7 +34,8 @@ def order(update, _):
     order_tax = db_api.get_order_rate()
     update.message.reply_text(f'your tax for order is {order_tax}')
     update.message.reply_text("type /summary to find out how much you earned this month")
-    update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
+    # update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
+    update.message.reply_text(text=CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
