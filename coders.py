@@ -33,7 +33,8 @@ def order(update, _):
     order_tax = db_api.get_order_rate()
     update.message.reply_text(f'your tax for order is {order_tax}')
     update.message.reply_text("type /summary to find out how much you earned this month")
-    update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
+    # update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
@@ -185,7 +186,8 @@ def send_estimate_data_confirmation_order(update, context):
         update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}')
     else:
         update.message.reply_text(f'sorry, order {order_id} is taken')
-        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
