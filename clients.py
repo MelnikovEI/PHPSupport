@@ -18,6 +18,14 @@ def start_client_talk(update, _):  # функция запускающая ра�
 
 # блок создания нового заказа===========================================================================================
 def create_order(update, _):  # функция которая просит текст заказа
+    update.message.reply_text("""
+Examples of order:
+- Здравствуйте, нужно добавить в интернет-магазин фильтр товаров по цвету
+- Здравствуйте, нужно выгрузить товары с сайта в Excel-таблице
+- Здравствуйте, нужно загрузить 450 SKU на сайт из Execel таблицы
+- Здравствуйте, хочу провести на сайте акцию, хочу разместить баннер и добавить функционал, чтобы впридачу к акционным товарам выдавался приз
+
+    """)
     update.message.reply_text('input task text in loose format, or\nfor back upper /begin')
     return C_2
 
@@ -66,7 +74,13 @@ def expose_active_order(update, _):
 
 def work_with_order(update, _):
     order_id = int(update.message.text)
-    order = db_api.get_order(order_id)
+    user = update.message.from_user.username
+    order = db_api.get_client_order(order_id, user)
+    if not order:
+        update.message.reply_text('You entered an order ID that does not exist')
+        update.message.reply_text('type /begin to return to the beginning ')
+        return ConversationHandler.END
+
     tg_account = str(order.client)
     client_processing_order_id[tg_account] = order_id
     contractor_chat_id = order.contractor_chat_id

@@ -13,7 +13,7 @@ from telegram.ext import (Updater,
 import db_api
 
 dotenv.load_dotenv(Path('venv', '.env'))
-bot_token = os.environ['PINKY']
+bot_token = os.environ['BOT_TG_TOKEN']
 
 
 def start(update, _):

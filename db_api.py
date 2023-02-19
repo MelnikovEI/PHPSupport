@@ -5,6 +5,7 @@ from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
 
 
 def get_order(order_id: int):
+
     order = get_object_or_404(Order, id=order_id)
     return order
 
@@ -136,16 +137,30 @@ def get_contractor_order(order_id, tg_account):
     """Возвращает order по id только если этот заказ взят этим подрядчиком"""
     try:
         contractor = Contractor.objects.get(tg_account=tg_account)
+        order = Order.objects.get(id=order_id)
     except Contractor.DoesNotExist:
         return None
-    try:
-        order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
         return None
+
     if order.contractor == contractor:
         return order
     else:
         return None
+
+
+def get_client_order(order_id, tg_account):
+    """"""
+    try:
+        client = Client.objects.get(tg_account=tg_account)
+        order = Order.objects.get(id=order_id, client=client)
+    except Client.DoesNotExist:
+        return None
+    except Order.DoesNotExist:
+        return None
+
+    return order
+
 
 
 def get_access_info(order_id):
