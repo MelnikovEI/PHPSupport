@@ -5,7 +5,7 @@ from telegram.ext import ConversationHandler, ContextTypes
 
 # начало блока функций для разговора с программистом ===================================================================
 
-C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
+C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8, C_9 = range(9)  # точки ветвления разговора
 contractor_processing_order_id = {}  # для  хранения id заказа
 CODER_AVALIABLE_COMMANDS = """
 type:
@@ -145,7 +145,7 @@ def message_for_client(update, context):
                                                           '\nfor answer /active.')
     update.message.reply_text('your message has been successfully send,\nchao.\n for back upper /active_orders')
     update.message.reply_text(CODER_AVALIABLE_COMMANDS)
-    return ConversationHandler.END
+    return C_9
 
 
 # end active orders=====================================================================================================
