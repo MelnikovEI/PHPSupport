@@ -1,5 +1,7 @@
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 import db_api
-from telegram.ext import ConversationHandler
+from telegram.ext import ConversationHandler, ContextTypes
 
 # начало блока функций для разговора с программистом ===================================================================
 
@@ -12,9 +14,12 @@ type:
     /salary for salary menu
 """
 
+CODERS_MENU_KEYBOARD=InlineKeyboardMarkup([[InlineKeyboardButton('Main menu', callback_data='main')]])
+
 def start_coder_talk(update, _):  # функция запускающая разговор
     update.message.reply_text('hello, dear friend,\ntype /cancel for stop talking,\nfor getting info about money type '
                               '/salary\nwanna work with orders? Type /orders')
+
     return C_1
 
 
@@ -27,6 +32,8 @@ def salary(update, _):
 def order(update, _):
     order_tax = db_api.get_order_rate()
     update.message.reply_text(f'your tax for order is {order_tax}')
+    update.message.reply_text("type /summary to find out how much you earned this month")
+    update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
     return ConversationHandler.END
 
 
@@ -34,6 +41,8 @@ def summary(update, _):
     user = update.message.from_user.username
     summary = db_api.get_current_month_salary(user)
     update.message.reply_text(f'your summary is {summary}')
+    update.message.reply_text("type /order for tax for order")
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
@@ -49,7 +58,8 @@ def active_orders(update, _):
     user = update.message.from_user.username
     orders = db_api.get_active_contractor_orders(user)
     if not orders:
-        update.message.reply_text(f"You don't have any active orders\n{CODER_AVALIABLE_COMMANDS}")
+        update.message.reply_text(f"You don't have any active orders")
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
         return ConversationHandler.END
 
     for order in orders:
@@ -98,6 +108,7 @@ def submit_order(update, context):
         The order will be considered closed only after confirmation by the customer.
         """
     )
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
@@ -106,8 +117,8 @@ def get_admin(update, _):
     order_id = contractor_processing_order_id[user]
     order = db_api.get_order(order_id)
     update.message.reply_text(f'necessary credits for access : {order.access_info}')
-    return C_1
-    # return ConversationHandler.END
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+    return ConversationHandler.END
 
 
 def ask_question(update, _):
@@ -185,3 +196,4 @@ def send_estimate_data_confirmation_order(update, context):
 def coder_cancel(update, _):  # функция прерывающая разговор
     update.message.reply_text('as you want')
     return ConversationHandler.END
+
