@@ -72,7 +72,7 @@ def work_with_order(update, _):
         return C_3
     update.message.reply_text("""
     type /question to ask question
-    type /get_admin for get admin access inforamtion
+    type /get_admin for get admin access information
     type /submit to confirm order
     type /cancel for quit
     """)
@@ -85,8 +85,8 @@ def submit_order(update, context):
     order = db_api.get_order(order_id)
     client_chat_id = order.client_chat_id
     db_api.close_order_by_contractor(order_id)
-    db_api.add_message(order_id, f'contractor {user} has closed order {order_id}')
-    context.bot.send_message(chat_id=client_chat_id, text=f'{user} has closed your order {order_id}')
+    # db_api.add_message(order_id, f'contractor {user} has closed order {order_id}')
+    context.bot.send_message(chat_id=client_chat_id, text=f' has closed your order {order_id}')
     update.message.reply_text(
         """
         you have closed the order, the customer will be notified about it.
@@ -158,7 +158,7 @@ def send_estimate_data_confirmation_order(update, context):
     contractor_chat_id = update.message.chat.id
     order = db_api.get_order(order_id)
     client_chat_id = order.client_chat_id
-    if db_api.take_order(tg_account=user,order_id=order_id, estimation=estimate):
+    if db_api.take_order(tg_account=user,order_id=order_id, contractor_chat_id=contractor_chat_id ,estimation=estimate):
         db_api.add_message(order_id, f'contractor {user} take this order')
         context.bot.send_message(chat_id=client_chat_id,
                                  text=f'your order id: {order_id} has been taken by contractor {user}.')
