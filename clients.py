@@ -66,8 +66,9 @@ def expose_active_order(update, _):
 def work_with_order(update, _):
     order_id = int(update.message.text)
     order = db_api.get_order(order_id)
-    tg_account = order.client
+    tg_account = str(order.client)
     client_processing_order_id[tg_account] = order_id
+    print(client_processing_order_id)
     contractor_chat_id = order.contractor_chat_id
     if contractor_chat_id:
         history_of_order = db_api.get_order_info(order_id)['message_history']
@@ -81,6 +82,7 @@ def work_with_order(update, _):
 
 def message_for_coder(update, context):
     user = update.message.from_user.username
+    print(client_processing_order_id)
     order_id = client_processing_order_id[user]
     order = db_api.get_order(order_id)
     contractor_chat_id = order.contractor_chat_id
