@@ -12,8 +12,7 @@ def get_order(order_id: int):
 def add_message(order_id: int, message: str):
     """Добавить сообщение в переписку между клиентом и подрядчиком"""
     order = get_object_or_404(Order, id=order_id)
-    question = Question.objects.create(question=message)
-    order.question.add(question)
+    Question.objects.create(question=message, order=order)
 
 
 # client block ============================================================================================
@@ -54,7 +53,7 @@ def get_order_info(order_id: int):
     order = get_object_or_404(Order, id=order_id)
     order_status = {
         'is_contractor_defined': bool(order.contractor),
-        'message_history': list(order.question.all().values_list('question', flat=True))
+        'message_history': list(order.questions.all().values_list('question', flat=True))
     }
     return order_status
 
