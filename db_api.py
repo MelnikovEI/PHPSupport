@@ -139,7 +139,7 @@ def get_contractor_order(order_id, tg_account):
     except Contractor.DoesNotExist:
         return None
     try:
-        order = get_object_or_404(Order, id=order_id)
+        order = Order.objects.get(id=order_id)
     except Order.DoesNotExist:
         return None
     if order.contractor == contractor:
