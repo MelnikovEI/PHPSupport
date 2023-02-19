@@ -158,7 +158,7 @@ def send_estimate_data_confirmation_order(update, context):
     contractor_chat_id = update.message.chat.id
     order = db_api.get_order(order_id)
     client_chat_id = order.client_chat_id
-    if db_api.contractor_choose_order(order_id, user, contractor_chat_id, estimate):
+    if db_api.take_order(tg_account=user,order_id=order_id, estimation=estimate):
         db_api.add_message(order_id, f'contractor {user} take this order')
         context.bot.send_message(chat_id=client_chat_id,
                                  text=f'your order id: {order_id} has been taken by contractor {user}.')
