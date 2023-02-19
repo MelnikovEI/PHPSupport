@@ -6,8 +6,8 @@ from telegram.ext import ConversationHandler
 # начало блока функций для разговора с программистом ===================================================================
 
 C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
-coder_processing_order_id = []  # список для  хранения id заказа
-coder_processing_order_text = []  # список для  хранения текста заказа
+contractor_processing_order_id = {}  # для  хранения id заказа
+contractor_processing_order_text = {}  # для  хранения текста заказа
 
 
 def start_coder_talk(update, _):  # функция запускающая разговор
@@ -62,30 +62,14 @@ def active_orders(update, _):
     return C_4
 
 
-def get_avaliable_orders(update, _):
-    orders = db_api.get_avaliable_orders()
-    print(orders)
-    if not orders:
-        update.message.reply_text("""Unfortunately, we do not have orders for you.
-         Check back a little later, maybe they will show up""")
-        return
-    for order in orders:
-        update.message.reply_text(f"""
-                                        order id: {order['id']},
-                                        task: {order['request']},
-                                        """
-                                  )
-    update.message.reply_text('for choose order for working, input order id')
-    return
-
-
 def work_with_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
+    contractor_processing_order_id[user] = order_id
     # order = db_api.get_contractor_orser(order_id,user)
     ##---<ALARM!!!> временная заглушка тут
     order = db_api.get_order(order_id)
-    #--------------------
+    # --------------------
     if not order:
         update.message.reply_text('You entered an order ID that does not exist')
         return C_3
@@ -98,22 +82,66 @@ def work_with_order(update, _):
     return C_5
 
 
-def submit_order(update, _):
-    # Надо подумать как получить id ))
-    # order_id = int(update.message.text)
-    # db_api.close_order_by_contractor(order_id)
+def submit_order(update, context):
+    user = update.message.from_user.username
+    order_id = contractor_processing_order_id[user]
+    order = db_api.get_order(order_id)
+    client_chat_id = order.client_chat_id
+    db_api.close_order_by_contractor(order_id)
+    db_api.add_message(order_id, f'contractor {user} has closed order {order_id}')
+    context.bot.send_message(chat_id=client_chat_id, text=f'{user} has closed your order {order_id}')
     update.message.reply_text(
         """
         you have closed the order, the customer will be notified about it.
         The order will be considered closed only after confirmation by the customer.
         """
     )
+    return ConversationHandler.END
+
 
 def get_admin(update, _):
-    ...
+    user = update.message.from_user.username
+    order_id = contractor_processing_order_id[user]
+    order = db_api.get_order(order_id)
+    update.message.reply_text(f'necessary credits for access : {order.access_info}')
+    return ConversationHandler.END
+
 
 def ask_question(update, _):
-    ...
+    user = update.message.from_user.username
+    order_id = contractor_processing_order_id[user]
+    history_of_order = db_api.get_order_info(order_id)['message_history']
+    update.message.reply_text(f'message history of order: {history_of_order}, \n please, text your message')
+    return C_6
+
+
+def message_for_client(update, context):
+    user = update.message.from_user.username
+    order_id = contractor_processing_order_id[user]
+    order = db_api.get_order(order_id)
+    client_chat_id = order.client_chat_id
+    text = update.message.text
+    db_api.add_message(order_id, f'contractor {user}: {text}')
+    context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
+    update.message.reply_text('your message has been successfully send,\nchao.')
+    return ConversationHandler.END
+# end active orders=====================================================================================================
+
+# available orders =====================================================================================================
+def get_avaliable_orders(update, _):
+    orders = db_api.get_available_orders()
+    if not orders:
+        update.message.reply_text("""Unfortunately, we do not have orders for you.
+         Check back a little later, maybe they will show up""")
+        return C_3
+    for order in orders:
+        update.message.reply_text(f"""
+                                        order id: {order['id']},
+                                        task: {order['request']},
+                                        """
+                                  )
+    update.message.reply_text('for choose order for working, input order id')
+    return C_7
 
 
 # end orders block======================================================================================================
