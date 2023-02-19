@@ -1,5 +1,7 @@
 import datetime
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Client(models.Model):
@@ -22,6 +24,14 @@ class Contractor(models.Model):
 
     def __str__(self):
         return self.tg_account
+
+
+@receiver(post_save, sender=Contractor)
+def contractor_disconnected(sender, instance, **kwargs):
+    """ Подрядчик разочаровал → хочу закрыть ему доступ к заказам → закрыл, его заказы ушли в состояние первичной
+    заявки, если на нём такие были"""
+    if not instance.is_verified:
+        Order.objects.filter(contractor=instance).update(contractor=None)
 
 
 class Question(models.Model):
