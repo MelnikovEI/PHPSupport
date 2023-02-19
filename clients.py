@@ -71,7 +71,7 @@ def work_with_order(update, _):
     contractor_chat_id = order.contractor_chat_id
     if contractor_chat_id:
         history_of_order = db_api.get_order_info(order_id)['message_history']
-        update.message.reply_text(f'history of order: {history_of_order}, \n please, text your message')
+        update.message.reply_text(f'message history of order: {history_of_order}, \n please, text your message')
         return C_4
     else:
         update.message.reply_text('sorry, this order is still waiting for implementer, you also can press any '
@@ -80,13 +80,12 @@ def work_with_order(update, _):
 
 
 def message_for_coder(update, context):
-    tg_account = update.message.from_user.username
-    order_id = client_processing_order_id[tg_account]
+    user = update.message.from_user.username
+    order_id = client_processing_order_id[user]
     order = db_api.get_order(order_id)
     contractor_chat_id = order.contractor_chat_id
-    user = tg_account
     text = update.message.text
-    db_api.add_message(order_id, f'{user}: {update.message.text}')
+    db_api.add_message(order_id, f'client {user}: {text}')
     context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
     update.message.reply_text('your message has been successfully send,\nchao,\n you also can press any command:\n'
                               ' /start, /begin, /create, /active, /accepted')
@@ -116,7 +115,7 @@ def closing_order(update, context):
     contractor_chat_id = order.contractor_chat_id
     user = order.client.tg_account
     db_api.close_order_by_client(order_id)
-    db_api.add_message(order_id, f"you've closed order {order_id}")
+    db_api.add_message(order_id, f"client {user} has closed order {order_id}")
 
     try:
         context.bot.send_message(chat_id=contractor_chat_id, text=f'order id: {order_id}  was accepted by {user}')
