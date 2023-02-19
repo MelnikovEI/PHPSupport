@@ -78,7 +78,7 @@ def work_with_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
-    order = db_api.get_contractor_orser(order_id,user)
+    order = db_api.get_contractor_order(order_id,user)
     # --------------------
     if not order:
         update.message.reply_text('You entered an order ID that does not exist')
