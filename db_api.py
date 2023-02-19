@@ -5,11 +5,8 @@ from PHP_support_admin.models import Order, Question, Contractor, Client, Rate
 
 
 def get_order(order_id: int):
-    try:
-        order = get_object_or_404(Order, id=order_id)
-        return order
-    except:
-        return None
+    order = get_object_or_404(Order, id=order_id)
+    return order
 
 
 def add_message(order_id: int, message: str):
@@ -136,15 +133,12 @@ def get_available_orders():
 
 def get_contractor_order(order_id, tg_account):
     """Возвращает order по id только если этот заказ взят этим подрядчиком"""
-    try:
-        contractor = get_object_or_404(Contractor, tg_account=tg_account)
-        order = get_object_or_404(Order, id=order_id)
-    except:
-        return None
+    contractor = get_object_or_404(Contractor, tg_account=tg_account)
+    order = get_object_or_404(Order, id=order_id)
     if order.contractor == contractor:
         return order
     else:
-        return None
+        return
 
 
 def get_access_info(order_id):

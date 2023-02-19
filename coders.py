@@ -78,13 +78,13 @@ def work_with_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
-    order = db_api.get_contractor_order(order_id,user)
-
+    # order = db_api.get_contractor_orser(order_id,user)
+    # ---<ALARM!!!> временная заглушка тут
+    order = db_api.get_order(order_id)
     # --------------------
     if not order:
         update.message.reply_text('You entered an order ID that does not exist')
-        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
-        return ConversationHandler.END
+        return C_3
     update.message.reply_text("""
     type /question to ask question
     type /get_admin for get admin access information
@@ -165,10 +165,6 @@ def get_avaliable_orders(update, _):
 
 def choose_order(update, _):
     order_id = int(update.message.text)
-    order = db_api.get_contractor_order(order_id)
-    if not order:
-        update.message.reply_text("you type wrong number!")
-        return C_3
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
     update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format')
