@@ -100,7 +100,8 @@ def submit_order(update, context):
     client_chat_id = order.client_chat_id
     db_api.close_order_by_contractor(order_id)
     # db_api.add_message(order_id, f'contractor {user} has closed order {order_id}')
-    context.bot.send_message(chat_id=client_chat_id, text=f' has closed your order {order_id}')
+    context.bot.send_message(chat_id=client_chat_id, text=f'your order {order_id} has been closed by contractor,\n'
+                                                          f'you have to accept closing /accepted')
     update.message.reply_text(
         """
         you have closed the order, the customer will be notified about it.
@@ -158,7 +159,7 @@ def get_avaliable_orders(update, _):
                                         task: {order['request']},
                                         """
                                   )
-    update.message.reply_text('for choose order for working, input order id')
+    update.message.reply_text('for choose order for working, input order id or /orders for back upper')
     return C_7
 
 
