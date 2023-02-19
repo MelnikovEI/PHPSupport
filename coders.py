@@ -33,8 +33,7 @@ def order(update, _):
     order_tax = db_api.get_order_rate()
     update.message.reply_text(f'your tax for order is {order_tax}')
     update.message.reply_text("type /summary to find out how much you earned this month")
-    # update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
-    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+    update.message.reply_text(text=CODER_AVALIABLE_COMMANDS, reply_markup=CODERS_MENU_KEYBOARD)
     return ConversationHandler.END
 
 
@@ -79,13 +78,13 @@ def work_with_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
-    # order = db_api.get_contractor_orser(order_id,user)
-    # ---<ALARM!!!> временная заглушка тут
-    order = db_api.get_order(order_id)
+    order = db_api.get_contractor_order(order_id,user)
+
     # --------------------
     if not order:
         update.message.reply_text('You entered an order ID that does not exist')
-        return C_3
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        return ConversationHandler.END
     update.message.reply_text("""
     type /question to ask question
     type /get_admin for get admin access information
@@ -166,6 +165,10 @@ def get_avaliable_orders(update, _):
 
 def choose_order(update, _):
     order_id = int(update.message.text)
+    order = db_api.get_contractor_order(order_id)
+    if not order:
+        update.message.reply_text("you type wrong number!")
+        return C_3
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
     update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format')
@@ -186,8 +189,7 @@ def send_estimate_data_confirmation_order(update, context):
         update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}')
     else:
         update.message.reply_text(f'sorry, order {order_id} is taken')
-
-    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
