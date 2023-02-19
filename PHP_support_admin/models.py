@@ -19,7 +19,7 @@ class Client(models.Model):
 
 
 class Contractor(models.Model):
-    tg_account = models.CharField('telegram account for communication', max_length=200, unique=True)
+    tg_account = models.CharField('telegram account of Contractor', max_length=200, unique=True)
     is_verified = models.BooleanField("permission to get orders is granted?", default=False)
 
     def __str__(self):
