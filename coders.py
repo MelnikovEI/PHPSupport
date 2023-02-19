@@ -172,8 +172,19 @@ def get_avaliable_orders(update, _):
 
 
 def choose_order(update, _):
-    order_id = int(update.message.text)
+    try:
+        order_id = int(update.message.text)
+    except ValueError:
+        update.message.reply_text('You entered an order ID that does not exist')
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        return ConversationHandler.END
     user = update.message.from_user.username
+    # <!> ALARM костыль
+    if not  db_api.check_avaliable_order(order_id):
+        update.message.reply_text('You entered an order ID that does not exist')
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        return ConversationHandler.END
+
     contractor_processing_order_id[user] = order_id
     update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format\nfor '
                               f'back upper /available\n or /cancel')

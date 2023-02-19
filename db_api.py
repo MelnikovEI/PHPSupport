@@ -169,3 +169,10 @@ def get_access_info(order_id):
     return order.access_info
 
 # TBD =============================================================
+
+def check_avaliable_order(order_id):
+    try:
+        order=Order.objects.get(contractor=None,id=order_id)
+    except Order.DoesNotExist:
+        return None
+    return order

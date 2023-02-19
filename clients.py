@@ -73,7 +73,12 @@ def expose_active_order(update, _):
 
 
 def work_with_order(update, _):
-    order_id = int(update.message.text)
+    try:
+        order_id = int(update.message.text)
+    except ValueError:
+        update.message.reply_text('You entered an order ID that does not exist')
+        update.message.reply_text('type /begin to return to the beginning ')
+        return ConversationHandler.END
     user = update.message.from_user.username
     order = db_api.get_client_order(order_id, user)
     if not order:
