@@ -18,14 +18,14 @@ def start_client_talk(update, _):  # функция запускающая ра�
 
 # блок создания нового заказа===========================================================================================
 def create_order(update, _):  # функция которая просит текст заказа
-    update.message.reply_text('input task text in loose format')
+    update.message.reply_text('input task text in loose format, or\nfor back upper /begin')
     return C_2
 
 
 def send_order(update, _):  # функция которя записывает текст заказа
     tg_account = update.message.from_user.username
     client_processing_order_text[tg_account] = update.message.text
-    update.message.reply_text('input necessary access info in loose format')
+    update.message.reply_text('input necessary access info in loose format, or\nfor back upper /begin')
     return C_5
 
 
@@ -59,7 +59,8 @@ def expose_active_order(update, _):
                                 """
                                   )
 
-    update.message.reply_text('for choose order for working, input order id')
+    update.message.reply_text('for choose order for working, input order id, or\n'
+                              'for back upper /begin')
     return C_3
 
 
@@ -72,7 +73,8 @@ def work_with_order(update, _):
     contractor_chat_id = order.contractor_chat_id
     if contractor_chat_id:
         history_of_order = db_api.get_order_info(order_id)['message_history']
-        update.message.reply_text(f'message history of order: {history_of_order}, \n please, text your message')
+        update.message.reply_text(f'message history of order: {history_of_order}, \nplease, text your message, or\n'
+                                  f'for back upper /active')
         return C_4
     else:
         update.message.reply_text('sorry, this order is still waiting for implementer, you also can press any '
@@ -88,7 +90,8 @@ def message_for_coder(update, context):
     contractor_chat_id = order.contractor_chat_id
     text = update.message.text
     db_api.add_message(order_id, f'client {user}: {text}')
-    context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
+    context.bot.send_message(chat_id=contractor_chat_id, text=f'message from {user}, order id: {order_id} \n' +
+                                                              text+'\n'+'(for menu /common)')
     update.message.reply_text('your message has been successfully send,\nchao,\n you also can press any command:\n'
                               ' /start, /begin, /create, /active, /accepted')
     return ConversationHandler.END
@@ -105,6 +108,7 @@ def accept_order(update, _):
                                     order id: {order['id']},
                                     task: {order['request']},
                                     Contractor: {'Назначен' if order['contractor_id'] else 'Неназначен'},
+                                    or for back upper /begin
 
                                     """
                                   )
@@ -120,7 +124,8 @@ def closing_order(update, context):
     db_api.add_message(order_id, f"client {user} has closed order {order_id}")
 
     try:
-        context.bot.send_message(chat_id=contractor_chat_id, text=f'order id: {order_id}  was accepted by {user}')
+        context.bot.send_message(chat_id=contractor_chat_id, text=f'order id: {order_id}  was accepted by '
+                                                                  f'{user}\n(for menu /common)')
         update.message.reply_text('your order has been successfully closed,\nchao,\nyou also can press any command:\n'
                                   ' /start, /begin, /create, /active, /accepted')
     except telegram.error.BadRequest:

@@ -25,7 +25,8 @@ def start_coder_talk(update, _):  # функция запускающая раз
 
 # money block ============================================================================================
 def salary(update, _):
-    update.message.reply_text('for tax for order type /order,\nfor month summary type /summary')
+    update.message.reply_text('for tax for order type /order,\nfor month summary type /summary\nfor back '
+                              'upper /common\n or /cancel')
     return C_2
 
 
@@ -49,7 +50,8 @@ def summary(update, _):
 # end money block=======================================================================================================
 # orders block==========================================================================================================
 def orders(update, _):
-    update.message.reply_text('for active orders type /active_orders,\nfor available type /available')
+    update.message.reply_text('for active orders type /active_orders,\nfor available type /available\nfor '
+                              'back upper /common\nor /cancel')
     return C_3
 
 
@@ -70,7 +72,7 @@ def active_orders(update, _):
                                 """
                                   )
 
-    update.message.reply_text('for choose order for working, input order id')
+    update.message.reply_text('for choose order for working, input order id, or\nfor back upper /orders\n or /cancel')
     return C_4
 
 
@@ -101,11 +103,13 @@ def submit_order(update, context):
     db_api.close_order_by_contractor(order_id)
     # db_api.add_message(order_id, f'contractor {user} has closed order {order_id}')
     context.bot.send_message(chat_id=client_chat_id, text=f'your order {order_id} has been closed by contractor,\n'
-                                                          f'you have to accept closing /accepted')
+                                                          f'you have to accept closing /accepted, or\n '
+                                                          f'for answer /active.')
     update.message.reply_text(
         """
         you have closed the order, the customer will be notified about it.
         The order will be considered closed only after confirmation by the customer.
+        for back upper /active_orders
         """
     )
     update.message.reply_text(CODER_AVALIABLE_COMMANDS)
@@ -116,7 +120,7 @@ def get_admin(update, _):
     user = update.message.from_user.username
     order_id = contractor_processing_order_id[user]
     order = db_api.get_order(order_id)
-    update.message.reply_text(f'necessary credits for access : {order.access_info}')
+    update.message.reply_text(f'necessary credits for access : {order.access_info}, or for back upper /active_orders')
     update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
@@ -125,7 +129,8 @@ def ask_question(update, _):
     user = update.message.from_user.username
     order_id = contractor_processing_order_id[user]
     history_of_order = db_api.get_order_info(order_id)['message_history']
-    update.message.reply_text(f'message history of order: {history_of_order}, \n please, text your message')
+    update.message.reply_text(f'message history of order: {history_of_order}, \n please, text your message, '
+                              f'or\n for back upper /active_orders\n or /cancel')
     return C_6
 
 
@@ -136,8 +141,9 @@ def message_for_client(update, context):
     client_chat_id = order.client_chat_id
     text = update.message.text
     db_api.add_message(order_id, f'contractor {user}: {text}')
-    context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
-    update.message.reply_text('your message has been successfully send,\nchao.')
+    context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text+
+                                                          '\nfor answer /active.')
+    update.message.reply_text('your message has been successfully send,\nchao.\n for back upper /active_orders')
     update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
@@ -150,7 +156,8 @@ def get_avaliable_orders(update, _):
     if not orders:
         update.message.reply_text("""
         Unfortunately, we do not have orders for you.
-        Check back a little later, maybe they will show up""")
+        Check back a little later, maybe they will show up
+        for back upper /orders""")
         update.message.reply_text(CODER_AVALIABLE_COMMANDS)
         return ConversationHandler.END
     for order in orders:
@@ -159,7 +166,7 @@ def get_avaliable_orders(update, _):
                                         task: {order['request']},
                                         """
                                   )
-    update.message.reply_text('for choose order for working, input order id or /orders for back upper')
+    update.message.reply_text('for choose order for working, input order id or /orders for back upper\n or /cancel')
     return C_7
 
 
@@ -167,7 +174,8 @@ def choose_order(update, _):
     order_id = int(update.message.text)
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
-    update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format')
+    update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format\nfor '
+                              f'back upper /available\n or /cancel')
     return C_8
 
 
@@ -181,10 +189,11 @@ def send_estimate_data_confirmation_order(update, context):
     if db_api.take_order(tg_account=user,order_id=order_id, contractor_chat_id=contractor_chat_id ,estimation=estimate):
         # db_api.add_message(order_id, f'contractor {user} take this order')
         context.bot.send_message(chat_id=client_chat_id,
-                                 text=f'your order id: {order_id} has been taken by contractor.')
-        update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}')
+                                 text=f'your order id: {order_id} has been taken by contractor.\nfor answer /active.')
+        update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}.\nfor '
+                                  f'back upper /available\n or /cancel')
     else:
-        update.message.reply_text(f'sorry, order {order_id} is taken')
+        update.message.reply_text(f'sorry, order {order_id} is taken\nfor back upper /available\n or /cancel')
         update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
