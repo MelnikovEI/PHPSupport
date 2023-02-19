@@ -134,9 +134,12 @@ def get_available_orders():
 def get_contractor_order(order_id, tg_account):
     """Возвращает order по id только если этот заказ взят этим подрядчиком"""
     try:
-        contractor = get_object_or_404(Contractor, tg_account=tg_account)
+        contractor = Contractor.objects.get(tg_account=tg_account)
+    except Contractor.DoesNotExist:
+        return None
+    try:
         order = get_object_or_404(Order, id=order_id)
-    except:
+    except Order.DoesNotExist:
         return None
     if order.contractor == contractor:
         return order
