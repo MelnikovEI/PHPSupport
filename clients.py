@@ -3,7 +3,7 @@ from telegram.ext import ConversationHandler
 
 import db_api
 
-C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
+C_1, C_2, C_3, C_4, C_5, C_6 = range(6)  # точки ветвления разговора
 client_processing_order_id = {}  # для  хранения id заказа
 client_processing_order_text = {}  # для  хранения текста заказа
 

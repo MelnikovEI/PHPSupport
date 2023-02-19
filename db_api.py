@@ -147,3 +147,6 @@ def get_access_info(order_id):
     return order.access_info
 
 # TBD =============================================================
+def contractor_choose_order(order_id, tg_account, contractor_chat_id, estimate): # проверить может ли контрактор брать новые заказы, свободен ли данный заказ и потом соответсвенно обновить заказ
+    pass
+    return # True/False

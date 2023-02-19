@@ -55,8 +55,8 @@ coder_conversation_handler = ConversationHandler(
         CommandHandler('common', coders.start_coder_talk),
         CommandHandler('salary', coders.salary),
         CommandHandler('order', coders.order),
-        CommandHandler('summary', coders.summary)  # ,
-        # CommandHandler('orders', coders.orders)
+        CommandHandler('summary', coders.summary),
+        CommandHandler('orders', coders.orders)
     ],
     states={
         coders.C_1: [CommandHandler('salary', coders.salary),
@@ -75,7 +75,9 @@ coder_conversation_handler = ConversationHandler(
             CommandHandler('get_admin', coders.get_admin),
             CommandHandler('question', coders.ask_question)
         ],
-        coders.C_6: [MessageHandler(Filters.text & (~Filters.command), coders.message_for_client)]
+        coders.C_6: [MessageHandler(Filters.text & (~Filters.command), coders.message_for_client)],
+        coders.C_7: [MessageHandler(Filters.text & (~Filters.command), coders.choose_order)],
+        coders.C_8: [MessageHandler(Filters.text & (~Filters.command), coders.send_estimate_data_confirmation_order)]
     },
     fallbacks=[CommandHandler('cancel', coders.coder_cancel)]
 )

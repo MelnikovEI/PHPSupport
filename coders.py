@@ -1,5 +1,3 @@
-# import bd
-import telegram
 import db_api
 from telegram.ext import ConversationHandler
 
@@ -7,7 +5,6 @@ from telegram.ext import ConversationHandler
 
 C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
 contractor_processing_order_id = {}  # для  хранения id заказа
-contractor_processing_order_text = {}  # для  хранения текста заказа
 
 
 def start_coder_talk(update, _):  # функция запускающая разговор
@@ -67,7 +64,7 @@ def work_with_order(update, _):
     user = update.message.from_user.username
     contractor_processing_order_id[user] = order_id
     # order = db_api.get_contractor_orser(order_id,user)
-    ##---<ALARM!!!> временная заглушка тут
+    # ---<ALARM!!!> временная заглушка тут
     order = db_api.get_order(order_id)
     # --------------------
     if not order:
@@ -125,6 +122,8 @@ def message_for_client(update, context):
     context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
     update.message.reply_text('your message has been successfully send,\nchao.')
     return ConversationHandler.END
+
+
 # end active orders=====================================================================================================
 
 # available orders =====================================================================================================
@@ -142,6 +141,34 @@ def get_avaliable_orders(update, _):
                                   )
     update.message.reply_text('for choose order for working, input order id')
     return C_7
+
+
+def choose_order(update, _):
+    order_id = int(update.message.text)
+    user = update.message.from_user.username
+    contractor_processing_order_id[user] = order_id
+    update.message.reply_text(f'input your estimate term of doing order {order_id} in loose format')
+    return C_8
+
+
+def send_estimate_data_confirmation_order(update, context):
+    estimate = update.message.text
+    user = update.message.from_user.username
+    order_id = contractor_processing_order_id[user]
+    contractor_chat_id = update.message.chat.id
+    order = db_api.get_order(order_id)
+    client_chat_id = order.client_chat_id
+    if db_api.contractor_choose_order(order_id, user, contractor_chat_id, estimate):
+        db_api.add_message(order_id, f'contractor {user} take this order')
+        context.bot.send_message(chat_id=client_chat_id,
+                                 text=f'your order id: {order_id} has been taken by contractor {user}.')
+        update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}')
+    else:
+        update.message.reply_text(f'sorry, order {order_id} is taken')
+    return ConversationHandler.END
+
+
+# end available orders =================================================================================================
 
 
 # end orders block======================================================================================================
