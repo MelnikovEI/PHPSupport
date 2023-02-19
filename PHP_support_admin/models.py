@@ -1,3 +1,4 @@
+import calendar
 import datetime
 from django.db import models
 from django.db.models.signals import post_save
@@ -54,7 +55,10 @@ class Order(models.Model):
                                              null=True, blank=True)
 
     def __str__(self):
-        return f'{self.client.tg_account}_{self.id}'
+        if self.client:
+            return f'{self.client.tg_account}_{self.id}'
+        else:
+            return f'No_client_{self.id}'
 
 
 class Question(models.Model):
@@ -70,3 +74,23 @@ class Question(models.Model):
 class Rate(models.Model):
     order_rate = models.PositiveIntegerField(verbose_name="salary (rub) to contractor for 1 order")
     # valid_date = models.DateField(verbose_name="The date of starting ")
+
+
+class OrderStat(models.Model):
+    year = models.PositiveIntegerField(null=True, blank=True)
+    month = models.PositiveSmallIntegerField(null=True, blank=True)
+    month_order_quantity = models.PositiveIntegerField(null=True, blank=True)
+
+
+@receiver(post_save, sender=Order)
+def order_changed(sender, instance, **kwargs):
+    """ Добавился заказ + добавляем в статистику """
+    year = instance.date_opened.year
+    month = instance.date_opened.month
+    the_first_day_in_cur_month = datetime.date(year, month, 1)
+    the_first_day_in_next_month = datetime.date(year, month, 1)
+    quantity = Order.objects.filter(date_opened__gte=the_first_day_in_cur_month,
+                                    date_opened__lte=datetime.date(year, month, calendar.monthrange(year, month)[1])
+                                    ).count()
+    order_stat, created = OrderStat.objects.update_or_create(year=year, month=month)
+    OrderStat.objects.filter(year=order_stat.year, month=order_stat.month).update(month_order_quantity=quantity)
