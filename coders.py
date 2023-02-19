@@ -5,7 +5,12 @@ from telegram.ext import ConversationHandler
 
 C_1, C_2, C_3, C_4, C_5, C_6, C_7, C_8 = range(8)  # точки ветвления разговора
 contractor_processing_order_id = {}  # для  хранения id заказа
-
+CODER_AVALIABLE_COMMANDS = """
+type:
+    /common for main menu
+    /orders for order menu
+    /salary for salary menu
+"""
 
 def start_coder_talk(update, _):  # функция запускающая разговор
     update.message.reply_text('hello, dear friend,\ntype /cancel for stop talking,\nfor getting info about money type '
@@ -44,8 +49,8 @@ def active_orders(update, _):
     user = update.message.from_user.username
     orders = db_api.get_active_contractor_orders(user)
     if not orders:
-        update.message.reply_text("You don't have any active orders")
-        return C_1
+        update.message.reply_text(f"You don't have any active orders\n{CODER_AVALIABLE_COMMANDS}")
+        return ConversationHandler.END
 
     for order in orders:
         update.message.reply_text(f"""
@@ -101,7 +106,8 @@ def get_admin(update, _):
     order_id = contractor_processing_order_id[user]
     order = db_api.get_order(order_id)
     update.message.reply_text(f'necessary credits for access : {order.access_info}')
-    return ConversationHandler.END
+    return C_1
+    # return ConversationHandler.END
 
 
 def ask_question(update, _):
@@ -121,6 +127,7 @@ def message_for_client(update, context):
     db_api.add_message(order_id, f'contractor {user}: {text}')
     context.bot.send_message(chat_id=client_chat_id, text=f'message from {user}, order id: {order_id} \n' + text)
     update.message.reply_text('your message has been successfully send,\nchao.')
+    update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
@@ -130,9 +137,11 @@ def message_for_client(update, context):
 def get_avaliable_orders(update, _):
     orders = db_api.get_available_orders()
     if not orders:
-        update.message.reply_text("""Unfortunately, we do not have orders for you.
-         Check back a little later, maybe they will show up""")
-        return C_3
+        update.message.reply_text("""
+        Unfortunately, we do not have orders for you.
+        Check back a little later, maybe they will show up""")
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
+        return ConversationHandler.END
     for order in orders:
         update.message.reply_text(f"""
                                         order id: {order['id']},
@@ -161,10 +170,11 @@ def send_estimate_data_confirmation_order(update, context):
     if db_api.take_order(tg_account=user,order_id=order_id, contractor_chat_id=contractor_chat_id ,estimation=estimate):
         # db_api.add_message(order_id, f'contractor {user} take this order')
         context.bot.send_message(chat_id=client_chat_id,
-                                 text=f'your order id: {order_id} has been taken by contractor {user}.')
+                                 text=f'your order id: {order_id} has been taken by contractor.')
         update.message.reply_text(f'Congrats, order {order_id} is yours. Access info: {order.access_info}')
     else:
         update.message.reply_text(f'sorry, order {order_id} is taken')
+        update.message.reply_text(CODER_AVALIABLE_COMMANDS)
     return ConversationHandler.END
 
 
