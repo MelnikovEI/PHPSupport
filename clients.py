@@ -134,7 +134,11 @@ def accept_order(update, _):
 
 def closing_order(update, context):
     order_id = int(update.message.text)
-    order = db_api.get_order(order_id)
+    order = db_api.get_active_client_orders(order_id)
+    if not order:
+        update.message.reply_text('You entered an order ID that does not exist')
+        update.message.reply_text('type /begin to return to the beginning ')
+        return ConversationHandler.END
     contractor_chat_id = order.contractor_chat_id
     user = order.client.tg_account
     db_api.close_order_by_client(order_id)
